@@ -251,6 +251,7 @@ IR_eval_fct <- function(model, validation, test, n_cores) {
        "evalmod" = as.data.table(evalmod))
 }
 
+
 # 1. Feature Selection using Recursive Feature Elimination -------------------------------------------------------
 
 rfs_data <- copy(sa10b400_train)            
@@ -385,7 +386,7 @@ rfs <- list("eval_log" = rfs_eval_log,
             "res" = rfs_res,
             "plot" = rfs_plot,
             "remaining_features" = rfs_features)
-saveRDS(rfs, "RPC_Full_Run/rfs.rds")
+saveRDS(rfs, "RPC_Results/rfs.rds")
 
 
 # 2. Hyperparameter Optimization using a Sequential Method ------------------------------------------------------
@@ -401,7 +402,7 @@ ntree <- hp_tun_fct(hp_tun_data,
                     "num.trees",
                     ntree_val,
                     fixed_params = list())
-saveRDS(ntree, "RPC_Full_Run/ntree.rds")
+saveRDS(ntree, "RPC_Results/ntree.rds")
 
 # 2.2 Mtry ----------------------------------------------------------------
 
@@ -411,7 +412,7 @@ mtry <- hp_tun_fct(hp_tun_data,
                    "mtry",
                    mtry_val,
                    fixed_params = list(num.trees = ntree$tunval))
-saveRDS(mtry, "RPC_Full_Run/mtry.rds")
+saveRDS(mtry, "RPC_Results/mtry.rds")
 
 
 # 2.3 Sample fraction ---------------------------------------------------------
@@ -423,7 +424,7 @@ safr <- hp_tun_fct(hp_tun_data,
                    safr_val,
                    fixed_params = list(num.trees = ntree$tunval,
                                        mtry = mtry$tunval))
-saveRDS(safr, "RPC_Full_Run/safr.rds")
+saveRDS(safr, "RPC_Results/safr.rds")
 
 
 # 2.4 Minimal node size ---------------------------------------------------
@@ -437,7 +438,7 @@ ndsz <- hp_tun_fct(hp_tun_data,
                                        mtry = mtry$tunval,
                                        sample.fraction = safr$tunval,
                                        replace = repl$tunval))
-saveRDS(ndsz, "RPC_Full_Run/ndsz.rds")
+saveRDS(ndsz, "RPC_Results/ndsz.rds")
 
 
 # 2.5 Splitting rule ------------------------------------------------------
@@ -452,7 +453,7 @@ sprl <- hp_tun_fct(hp_tun_data,
                                        sample.fraction = safr$tunval,
                                        replace = repl$tunval,
                                        min.node.size = ndsz$tunval))
-saveRDS(sprl, "RPC_Full_Run/sprl.rds")
+saveRDS(sprl, "RPC_Results/sprl.rds")
 
 
 # 3. Null-Model --------------------------------------------------
@@ -503,4 +504,4 @@ opt_model <- list("res" = opt_res_list,
                   "confu_mat" = cf_opt,
                   "model" = opt_model_ranger,
                   "features" = rfs_features)
-saveRDS(opt_model, "RPC_Full_Run/opt_model.rds")
+saveRDS(opt_model, "RPC_Results/opt_model.rds")
